@@ -2,6 +2,8 @@ package com.hh.demoSpring.controller;
 import com.hh.demoSpring.repository.model.Usuario;
 import com.hh.demoSpring.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,23 +21,35 @@ public class UsuarioController {
 
     //@PathVariable en el get es obligatorio
     @GetMapping("/usuarios/{id}") //getById
-    public Usuario getById(@PathVariable("id") int id){
-        return usuarioService.getUsuarioById(id);
+    public ResponseEntity<?> getById(@PathVariable("id") int id){
+        Usuario u= usuarioService.getUsuarioById(id);
+        if (u == null)
+            return new ResponseEntity<>("No se pudo obtener", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(u, HttpStatus.OK);
     }
 // puedes hacer get y post con la misma ruta
     @PostMapping("/usuarios/")
-    public Usuario addUsuario(@RequestBody Usuario usuario){
-        return usuarioService.addUsuario(usuario); //solo lo mandas
+    public ResponseEntity<?> addUsuario(@RequestBody Usuario usuario){
+        Usuario u = usuarioService.addUsuario(usuario); //solo lo mandas
+        if (u == null)
+            return new ResponseEntity<>("No se pudo insertar", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(u, HttpStatus.OK);
     }
 // put y post estan hechos para que se le mande el objeto completo.
     @PutMapping("/usuarios/")
-    public Usuario updateUsuario(@RequestBody Usuario usuario){
-        return usuarioService.updateUsuario(usuario);
+    public ResponseEntity<?> updateUsuario(@RequestBody Usuario usuario){
+        Usuario u = usuarioService.updateUsuario(usuario);
+        if (u == null)
+            return new ResponseEntity<>("No se pudo actualizar", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(u, HttpStatus.OK);
     }
 
     @DeleteMapping("/usuarios/{id}")
-    public boolean deleteUsuario(@PathVariable("id") int id){
-        return usuarioService.deleteUsuario(id);
+    public ResponseEntity<?> deleteUsuario(@PathVariable("id") int id){
+        boolean b = usuarioService.deleteUsuario(id);
+        if (!b)
+            return new ResponseEntity<>("No se ha podido eliminar", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(true,HttpStatus.OK);
     }
 
     @GetMapping("/usuarios/")
