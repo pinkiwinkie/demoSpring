@@ -48,13 +48,16 @@ public class UsuarioController {
     public ResponseEntity<?> deleteUsuario(@PathVariable("id") int id){
         boolean b = usuarioService.deleteUsuario(id);
         if (!b)
-            return new ResponseEntity<>("No se ha podido eliminar", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No se pudo eliminar", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(true,HttpStatus.OK);
     }
 
     @GetMapping("/usuarios/")
-    public List<Usuario> getAllUsuarios() {
-        return usuarioService.getAllUsuarios();
+    public ResponseEntity<?> getAllUsuarios() {
+        List<Usuario> users =  usuarioService.getAllUsuarios();
+        if (users == null)
+            return new ResponseEntity<>("No hay usuarios", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(users,HttpStatus.OK);
     }
 
     //metadata para obtener informacion de la bbdd como por ejemplo los procedimiento, tablas...
